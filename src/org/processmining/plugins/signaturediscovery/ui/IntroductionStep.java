@@ -1,0 +1,55 @@
+package org.processmining.plugins.signaturediscovery.ui;
+
+import info.clearthought.layout.TableLayout;
+
+import org.processmining.plugins.signaturediscovery.settings.SignatureDiscoverySettingsListener;
+
+import com.fluxicon.slickerbox.factory.SlickerFactory;
+
+/**
+ * @author R.P. Jagadeesh Chandra 'JC' Bose
+ * @date 14 July 2010 
+ * @since 01 July 2010
+ * @version 1.0
+ * @email j.c.b.rantham.prabhakara@tue.nl
+ * @copyright R.P. Jagadeesh Chandra 'JC' Bose
+ * 			  Architecture of Information Systems Group (AIS) 
+ * 			  Department of Mathematics and Computer Science
+ * 			  University of Technology, Eindhoven, The Netherlands
+ */
+
+@SuppressWarnings("serial")
+public class IntroductionStep extends myStep {
+	SignatureDiscoverySettingsListener listener;
+	
+	public IntroductionStep() {
+		initComponents();
+	}
+
+	private void initComponents() {
+    	double size[][] = {{TableLayout.FILL},{TableLayout.FILL}};
+    	setLayout(new TableLayout(size));
+    	String body = "<p>This wizard will guide you through the process of configuring this plugin.</p>";
+    	body += "<p>The configuration options for signature discovery can be divided into two categories:<ol>";
+    	body += "<li>options for configuring the type of feature, and </li>";
+    	body += "<li>options for configuring the learning algorithm </li></ol>";
+    	body += "The wizard will allow you to configure these two categories in the given order.</p>";
+    	add(SlickerFactory.instance().createLabel("<html><h1>Introduction</h1>" + body), "0, 0, l, t");
+    	
+//    	JOptionPane.showMessageDialog(new JFrame(), "Hello, World");
+	}
+	
+	public boolean precondition() {
+		return true;
+	}
+
+	public void readSettings() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	public void setListener(SignatureDiscoverySettingsListener listener){
+		this.listener = listener;
+	}
+
+}

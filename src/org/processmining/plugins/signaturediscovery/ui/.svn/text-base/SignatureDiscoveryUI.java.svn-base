@@ -1,0 +1,279 @@
+package org.processmining.plugins.signaturediscovery.ui;
+
+import java.util.HashSet;
+import java.util.Set;
+
+ import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import org.deckfour.uitopia.api.event.TaskListener.InteractionResult;
+import org.deckfour.xes.model.XAttributeMap;
+import org.deckfour.xes.model.XEvent;
+import org.deckfour.xes.model.XLog;
+import org.deckfour.xes.model.XTrace;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.plugins.signaturediscovery.DiscoverSignatures;
+import org.processmining.plugins.signaturediscovery.SignatureDiscoveryInput;
+import org.processmining.plugins.signaturediscovery.settings.SignatureDiscoverySettingsListener;
+import org.processmining.plugins.signaturediscovery.swingx.ErrorDialog;
+import org.processmining.plugins.signaturediscovery.types.EvaluationOptionType;
+import org.processmining.plugins.signaturediscovery.types.Feature;
+import org.processmining.plugins.signaturediscovery.types.FeatureType;
+import org.processmining.plugins.signaturediscovery.types.LearningAlgorithmType;
+import org.processmining.plugins.signaturediscovery.util.Logger;
+
+/**
+ * @author R.P. Jagadeesh Chandra 'JC' Bose
+ * @date 14 July 2010 
+ * @since 01 July 2010
+ * @version 1.0
+ * @email j.c.b.rantham.prabhakara@tue.nl
+ * @copyright R.P. Jagadeesh Chandra 'JC' Bose
+ * 			  Architecture of Information Systems Group (AIS) 
+ * 			  Department of Mathematics and Computer Science
+ * 			  University of Technology, Eindhoven, The Netherlands
+ */
+
+public class SignatureDiscoveryUI implements SignatureDiscoverySettingsListener{
+	private UIPluginContext context;
+	private int introductionStep;
+	private int featureConfigurationStep;
+	private int featureCombinationConfigurationStep;
+	private int learningAlgorithmConfigurationStep;
+	private int signatureClassConfigurationStep;
+	
+	SignatureDiscoveryInput input;
+	
+	private int currentStep;
+	private int noSteps;
+	private myStep[] mySteps;
+	
+	boolean isNominalFeatureCount = true;
+	Set<String> classLabelSet, generateRulesForClassLabelSet;
+	
+	
+	public SignatureDiscoveryUI(UIPluginContext context){
+		this.context = context;
+		input = new SignatureDiscoveryInput();
+		Logger.startLog("C:\\Temp", "Log.txt");
+	}
+	
+	public SignaturePatternsFrame discover(XLog log){
+		InteractionResult result = InteractionResult.NEXT;
+		classLabelSet = new HashSet<String>();
+		Set<String> activitySet = new HashSet<String>();
+		XAttributeMap traceAttributeMap;
+		for(XTrace trace : log){
+			traceAttributeMap = trace.getAttributes();
+			if(traceAttributeMap.containsKey("Label")){
+				classLabelSet.add(traceAttributeMap.get("Label").toString());
+			}else{
+				ErrorDialog.showErrorDialog(new JFrame(), "Class Label is not available for some of the traces");
+				context.getFutureResult(0).cancel(true);
+				context.getFutureResult(1).cancel(true);
+				return null;
+			}
+			
+			for(XEvent event : trace)
+				activitySet.add(event.getAttributes().get("concept:name").toString());
+		}
+		
+		noSteps = 0;
+		introductionStep = noSteps++;
+		featureConfigurationStep = noSteps++;
+		featureCombinationConfigurationStep = noSteps++;
+		learningAlgorithmConfigurationStep = noSteps++;
+		signatureClassConfigurationStep = noSteps++;
+
+		mySteps = new myStep[noSteps];
+		mySteps[introductionStep] = new IntroductionStep();
+		mySteps[introductionStep].setListener(this);
+		
+		mySteps[featureConfigurationStep] = new FeatureConfigurationStep();
+		mySteps[featureConfigurationStep].setListener(this);
+		
+		mySteps[featureCombinationConfigurationStep] = new FeatureCombinationConfigurationStep();
+		mySteps[featureCombinationConfigurationStep].setListener(this);
+		
+		mySteps[learningAlgorithmConfigurationStep] = new LearningAlgorithmConfigurationStep(isNominalFeatureCount);
+		mySteps[learningAlgorithmConfigurationStep].setListener(this);
+		
+		mySteps[signatureClassConfigurationStep] = new SignatureClassConfigurationStep(classLabelSet);
+		mySteps[signatureClassConfigurationStep].setListener(this);
+		
+		currentStep = introductionStep;
+		
+		int noSelectedFeatures = 0;
+		while (true) {
+			if (currentStep < 0) {
+				currentStep = 0;
+			}
+			if (currentStep >= noSteps) {
+				currentStep = noSteps - 1;
+			}
+			context.log("Current step: " + currentStep);
+			result = context.showWizard("Signature Discovery Plugin", currentStep == 0, currentStep == noSteps - 1, mySteps[currentStep]);
+			
+			switch (result) {
+				case NEXT:
+					if(currentStep == featureConfigurationStep){
+						noSelectedFeatures = ((FeatureConfigurationStep)mySteps[currentStep]).noSelectedFeatures();
+						if(noSelectedFeatures > 1)
+							go(1);
+						else
+							go(2);
+					}else{
+						go(1);
+					}
+					break;
+				case PREV:
+					if(currentStep == learningAlgorithmConfigurationStep){
+						if(noSelectedFeatures > 1)
+							go(-1);
+						else
+							go(-2);
+					}else{
+						go(-1);
+					}
+					break;
+				case FINISHED:
+					readSettings();
+					boolean warn = checkSettings(activitySet.size());
+					if(warn){
+						currentStep = introductionStep;
+						go(1);
+					}else{
+						warn = checkAssociationRulesFeatureSettings();
+						if(warn){
+							currentStep = introductionStep;
+							go(1);
+						}else{
+							warn = checkAssociationRulesParameterSettings(activitySet.size());
+							if(warn){
+								currentStep = learningAlgorithmConfigurationStep;
+								go(0);
+							}else{
+//								System.out.println(input.getSelectedFeatureSet());
+								DiscoverSignatures discoverSignatures = new DiscoverSignatures(log, input);
+								return discoverSignatures.getSignaturePatternsFrame();
+							}
+						}
+					}
+					break;
+				default:
+					context.getFutureResult(0).cancel(true);
+					context.getFutureResult(1).cancel(true);
+					return null;
+			}
+		}
+	}
+	
+	private int go(int direction) {
+		currentStep += direction;
+		if (currentStep >= 0 && currentStep < noSteps) {
+			if (mySteps[currentStep].precondition()) {
+				return currentStep;
+			} else {
+				return go(direction);
+			}
+		}
+		return currentStep;
+	}
+
+	private void readSettings(){
+		for(int currentStep = 1; currentStep < noSteps; currentStep++)
+			mySteps[currentStep].readSettings();
+	}
+
+	private boolean checkSettings(int activitySetSize){
+//		System.out.println("Selected Feature Set: "+input.getSelectedFeatureSet());
+		if(activitySetSize > 100 && input.getSelectedFeatureSet().contains(Feature.KGram)){
+			int result = JOptionPane.showConfirmDialog(new JFrame(), "<HTML>The event log contains a large number of distinct activities (event classes). <BR> You have chosen either choose best or kgram in your feature configuration. <BR>It might be computationally expensive to choose those options. <BR> Do you want to change your options</HTML>", "", JOptionPane.YES_NO_OPTION);
+			if(result == JOptionPane.YES_OPTION)
+				return true;
+			else
+				return false;
+		}
+		
+		if(input.getSelectedFeatureSet().size() == 0){
+			JOptionPane.showMessageDialog(new JFrame(), "<HTML>You should select at least one feature</HTML>");
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean checkAssociationRulesFeatureSettings(){
+		if(input.getLearningAlgorithmType() == LearningAlgorithmType.AssociationRules && (input.getSelectedFeatureSet().size() > 1 || !input.getSelectedFeatureSet().contains(Feature.IE))){
+			JOptionPane.showMessageDialog(new JFrame(), "<HTML>Association rule mining is chosen as learning algorithm type. <BR> It is advisable to find association rules only on individual event features. <BR> Please choose Individaul event as feature and proceed</HTML>");
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean checkAssociationRulesParameterSettings(int activitySetSize){
+		if(input.getLearningAlgorithmType() == LearningAlgorithmType.AssociationRules && activitySetSize > 40 && new Float(input.getAssociationRuleSettings().getMinSupportValueStr()).floatValue() < 0.2){
+			JOptionPane.showMessageDialog(new JFrame(), "<HTML>There are more than 50 features in the event log. <BR>It is computationally expensive to find association rules with a low min support value. <BR>  Please choose a min support value at least 0.2</HTML>");
+			return true;
+		}
+		return false;
+	}
+	
+	public void clearFeatureSelection(){
+		input.removeAllFeatures();
+	}
+	
+	public void setNominalFeatureCount(boolean isNominalCount){
+		this.isNominalFeatureCount = isNominalCount;
+		((LearningAlgorithmConfigurationStep)mySteps[learningAlgorithmConfigurationStep]).setNominalFeatureCount(isNominalCount);
+	}
+	
+	public void featureSelectionChanged(String featureString, boolean isSelected) {
+		if(isSelected){
+			input.addFeature(featureString);
+		}else{
+			input.removeFeature(featureString);
+		}
+	}
+	
+	public void setFrequencyCount(boolean isNominalCount){
+		input.setNominalCount(isNominalCount);
+	}
+	
+	public void setFeatureCombination(String combinationString){
+		input.setFeatureCombination(combinationString);
+	}
+	
+	public void setFeatureType(FeatureType featureType){
+		input.setFeatureType(featureType);
+	}
+	
+	public void setBaseFeatures(boolean isBaseFeatures){
+		input.setBaseFeatures(isBaseFeatures);
+	}
+	
+	public void setLearningAlgorithmType(LearningAlgorithmType learningAlgorithmType){
+		input.setLearningAlgorithmType(learningAlgorithmType);
+	}
+	
+	public void setJ48Parameters(boolean isPruneTrees, boolean isPessimisticErrorPruning, String confidenceFactorFoldsStr){
+		input.setJ48Parameters(isPruneTrees, isPessimisticErrorPruning, confidenceFactorFoldsStr);
+	}
+	
+	public void setAssociationRuleParameters(boolean isClassAssociationRules, String sortRulesMetricStr, String sortRulesMetricValueStr, String minSupportValueStr, String maxSupportValueStr){
+		input.setAssociationRuleParameters(isClassAssociationRules, sortRulesMetricStr, sortRulesMetricValueStr, minSupportValueStr, maxSupportValueStr);
+	}
+	
+	public void setEvaluationOptions(EvaluationOptionType evaluationOptionType, String noFoldsPercentageSplitValueStr){
+		input.setEvaluationOptions(evaluationOptionType, noFoldsPercentageSplitValueStr);
+	}
+	
+	public void setSignatureClassOptions(Set<String> generateSignaturesForClassLabelSet, int noRulesToGenerate){
+		input.setGenerateSignaturesForClassLabelSet(generateSignaturesForClassLabelSet);
+		input.setNoRulesToGenerate(noRulesToGenerate);
+	}
+	
+	public void setKGramValue(int kGramValue){
+		input.setKGramValue(kGramValue);
+	}
+}
+

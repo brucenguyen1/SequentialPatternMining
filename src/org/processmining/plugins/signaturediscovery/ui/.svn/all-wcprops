@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui
+END
+FeatureConfigurationStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/FeatureConfigurationStep.java
+END
+myStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 121
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/myStep.java
+END
+FeatureCombinationConfigurationStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 150
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/FeatureCombinationConfigurationStep.java
+END
+SignatureDiscoveryUI.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/SignatureDiscoveryUI.java
+END
+LearningAlgorithmConfigurationStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 149
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/LearningAlgorithmConfigurationStep.java
+END
+RuleComponent.java
+K 25
+svn:wc:ra_dav:version-url
+V 128
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/RuleComponent.java
+END
+SignatureClassConfigurationStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/SignatureClassConfigurationStep.java
+END
+IntroductionStep.java
+K 25
+svn:wc:ra_dav:version-url
+V 131
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/IntroductionStep.java
+END
+SignaturePatternsFrame.java
+K 25
+svn:wc:ra_dav:version-url
+V 137
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/ui/SignaturePatternsFrame.java
+END

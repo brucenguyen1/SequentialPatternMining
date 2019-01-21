@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types
+END
+EvaluationOptionType.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types/EvaluationOptionType.java
+END
+LearningAlgorithmType.java
+K 25
+svn:wc:ra_dav:version-url
+V 139
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types/LearningAlgorithmType.java
+END
+Feature.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types/Feature.java
+END
+FeatureType.java
+K 25
+svn:wc:ra_dav:version-url
+V 129
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types/FeatureType.java
+END
+FeatureCombination.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/types/FeatureCombination.java
+END

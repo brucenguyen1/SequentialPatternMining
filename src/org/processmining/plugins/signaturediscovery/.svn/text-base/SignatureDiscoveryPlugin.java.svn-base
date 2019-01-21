@@ -1,0 +1,38 @@
+//Om Ganesayanamaha
+package org.processmining.plugins.signaturediscovery;
+
+import org.deckfour.xes.model.XLog;
+import org.processmining.contexts.uitopia.UIPluginContext;
+import org.processmining.contexts.uitopia.annotations.UITopiaVariant;
+import org.processmining.framework.plugin.annotations.Plugin;
+import org.processmining.framework.plugin.annotations.PluginVariant;
+import org.processmining.plugins.signaturediscovery.ui.SignatureDiscoveryUI;
+import org.processmining.plugins.signaturediscovery.ui.SignaturePatternsFrame;
+
+/**
+ * @author R.P. Jagadeesh Chandra 'JC' Bose
+ * @date 14 July 2010 
+ * @since 01 July 2010
+ * @version 1.0
+ * @email j.c.b.rantham.prabhakara@tue.nl
+ * @copyright R.P. Jagadeesh Chandra 'JC' Bose
+ * 			  Architecture of Information Systems Group (AIS) 
+ * 			  Department of Mathematics and Computer Science
+ * 			  University of Technology, Eindhoven, The Netherlands
+ */
+
+@Plugin(name = "Signature Discovery", parameterLabels = {"Log"}, returnLabels = {"Signature Patterns"}, returnTypes = {SignaturePatternsFrame.class}, userAccessible = true)
+public class SignatureDiscoveryPlugin {
+	@UITopiaVariant(affiliation = UITopiaVariant.EHV, author = "R.P. Jagadeesh Chandra 'JC' Bose", email = "j.c.b.rantham.prabhakara@tue.nl")
+	@PluginVariant(variantLabel = "Select options to use", requiredParameterLabels = { 0 })
+	public static SignaturePatternsFrame main(UIPluginContext context, final XLog log) {
+		// Set the look at feel for the alignment frame
+//		try {
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		SignatureDiscoveryUI signatureDiscoveryUI = new SignatureDiscoveryUI(context);
+		return signatureDiscoveryUI.discover(log);
+	}
+}

@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding
+END
+ActivityOverFlowException.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/ActivityOverFlowException.java
+END
+EncodeTraces.java
+K 25
+svn:wc:ra_dav:version-url
+V 133
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/EncodeTraces.java
+END
+EncodingNotFoundException.java
+K 25
+svn:wc:ra_dav:version-url
+V 146
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/EncodingNotFoundException.java
+END
+InstanceProfile.java
+K 25
+svn:wc:ra_dav:version-url
+V 136
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/InstanceProfile.java
+END
+EncodeActivitySet.java
+K 25
+svn:wc:ra_dav:version-url
+V 138
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/EncodeActivitySet.java
+END
+InstanceVector.java
+K 25
+svn:wc:ra_dav:version-url
+V 135
+/repos/prom/!svn/ver/48/Packages/SignatureDiscovery/Trunk/src/org/processmining/plugins/signaturediscovery/encoding/InstanceVector.java
+END
